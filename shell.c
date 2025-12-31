@@ -11,6 +11,7 @@ Functions declarations for built in shell commands
 int lsh_cd(char** args);
 int lsh_help(char** args);
 int lsh_exit(char** args);
+int lsh_launch(char **args);
 
 /*
 List of built in command names
