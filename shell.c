@@ -5,23 +5,33 @@
 #include <sys/wait.h>
 
 int lsh_launch(char **args){
-    pid_t pid , wpid ;
+    /*
+    in UNIX systems when the computer starts , the main process that starts is called Init.
+    Init runs until the computer turns off . when we need to run another function init duplicates
+    itself and the copy turns itself into a different process , this copy is called the child.
+    and while the child is doing processes the parent init has to wwait
+    */
+    pid_t pid , wpid ;//process id type
     int status;
 
     pid = fork();
 
-    if (pid ==0 ){
+    if (pid ==0 ){//pid = 0 means it's the child process
         if (execvp(args[0],args) == -1){
             perror("lsh");
         }
         exit(EXIT_FAILURE);
-    }else if (pid<0){
+    }else if (pid<0){ //pid is negative when there is a error
         perror("lsh");
-    }else{
+    }else{//pid>0 means it's the parent process
 
         do{
+            //wait for the child to chagnge the state(pause , finish , crash)
             wpid = waitpid(pid,&status,WUNTRACED);
         }while(!WIFEXITED(status) && !WIFSIGNALED(status));
+        /*
+        keep the parent paused until the child is completely dead or finsihed
+        */
     }
 
     return 1;
