@@ -4,30 +4,45 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+/*
+Functions declarations for built in shell commands
+*/
 int lsh_cd(char** args);
 int lsh_help(char** args);
 int lsh_exit(char** args);
 
+/*
+List of built in command names
+*/
 char* builtin_str[] = {
   "cd",
   "help",
   "exit"
 };
 
+/*
+list of built in command functions (the function names)
+*/
 int (*builtin_func[]) (char**) = {
   &lsh_cd,
   &lsh_help,
   &lsh_exit
 };
 
+//just to get the number of commands
 int lsh_num_builtins() {
   return sizeof(builtin_str) / sizeof(char *);
 }
 
+/*
+to change the directory (overwrites the normal 
+terminal cd which would not work in this case)
+*/
 int lsh_cd(char** args){
     if (args[1]==NULL){
        fprintf(stderr, "lsh: expected argument to \"cd\"\n"); 
     }else{
+        //actual change directory done here
         int result = chdir(args[1]);
 
         if (result !=0){
@@ -39,6 +54,9 @@ int lsh_cd(char** args){
 }
 
 int lsh_help(char** args){
+    /*
+    funtion to just display some text regarrding how to use the shell
+    */
     int i;
     printf("Selith Rubasingha's LSH\n");
     printf("Type program names and arguments, and hit enter.\n");
@@ -54,6 +72,7 @@ int lsh_help(char** args){
 
 int lsh_exit(char **args)
 {
+    
   return 0;
 }
 
