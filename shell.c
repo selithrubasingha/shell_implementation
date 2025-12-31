@@ -29,16 +29,17 @@ int (*builtin_func[]) (char**) = {
   &lsh_exit
 };
 
-//just to get the number of commands
+
 int lsh_num_builtins() {
+    //just to get the number of commands
   return sizeof(builtin_str) / sizeof(char *);
 }
 
-/*
-to change the directory (overwrites the normal 
-terminal cd which would not work in this case)
-*/
 int lsh_cd(char** args){
+    /*
+    to change the directory (overwrites the normal 
+    terminal cd which would not work in this case)
+    */
     if (args[1]==NULL){
        fprintf(stderr, "lsh: expected argument to \"cd\"\n"); 
     }else{
@@ -72,10 +73,26 @@ int lsh_help(char** args){
 
 int lsh_exit(char **args)
 {
-    
+
   return 0;
 }
 
+int lsh_execute(char** args){
+    int i;
+
+    if (args[0] == NULL){
+        return 1;
+    }
+
+    for (i=0 ; i < lsh_num_builtins();i++){
+        if (strcmp(args[0],builtin_str[i])==0){
+            return (*builtin_func[i])(args);
+
+        }
+    }
+
+    return lsh_launch(args);
+}
 
 int lsh_launch(char **args){
     /*
