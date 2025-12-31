@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
 
 /*
 Functions declarations for built in shell commands
@@ -47,7 +48,7 @@ int lsh_cd(char** args){
         int result = chdir(args[1]);
 
         if (result !=0){
-            perrr("lsh");
+            perror("lsh");
         }
     }
     return 1;
@@ -64,7 +65,7 @@ int lsh_help(char** args){
     printf("The following are built in:\n");
 
     for (i=0; i< lsh_num_builtins();i++){
-        printf(" %s\n",builtin_str);
+        printf(" %s\n",builtin_str[i]);
     }
 
     printf("Use the man command for information on other programs.\n");
@@ -78,6 +79,9 @@ int lsh_exit(char **args)
 }
 
 int lsh_execute(char** args){
+    /*
+    reads the arguments ... compares the string to the commands array and execute the relavent functions
+    */
     int i;
 
     if (args[0] == NULL){
@@ -182,10 +186,7 @@ char* lsh_read_line(void){
         if (c==EOF || c=='\n'){
             buffer[position] = '\0';
             return buffer;
-        }else{
-            buffer[position] = c;
         }
-
         buffer[position] = c;
 
         position++;
